@@ -76,4 +76,10 @@ The app is structured into well-defined modules:
 
 > The architecture enables easy mocking of dependencies and promotes isolated testing of ViewModels and networking logic.
 
+## 📸 Screenshots
+<img width="1138" alt="Screenshot 2025-07-03 at 4 33 46 PM" src="https://github.com/user-attachments/assets/a6fa3814-b52e-4eaa-9a3c-961ab9e54383" />
+![Simulator Screenshot - iPhone 16 - 2025-07-03 at 15 57 12](https://github.com/user-attachments/assets/888f3973-caf2-4f6d-866b-b53e0e2da9af)
+
+
+
 
