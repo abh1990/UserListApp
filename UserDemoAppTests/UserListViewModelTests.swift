@@ -43,5 +43,21 @@ final class UserListViewModelTests: XCTestCase {
             XCTAssertFalse(viewModel.isLoading)
             XCTAssertNil(viewModel.errorMessage)
         }
+    
+    func test_loadUsers_failure_setsErrorMessage() async {
+        // Arrange
+        let mockRepo = MockUserRepository()
+        mockRepo.shouldThrowError = true
+     
+        let viewModel = UserListViewModel(useCase: GetUsersUseCaseImp(repo: mockRepo))
+     
+        // Act
+        await viewModel.loadUsersList()
+     
+        // Assert
+        XCTAssertEqual(viewModel.users.count, 0)
+        XCTAssertFalse(viewModel.isLoading)
+        XCTAssertEqual(viewModel.errorMessage, "The network request failed with error: Failed to fetch users")
+    }
 
 }

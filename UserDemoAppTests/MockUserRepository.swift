@@ -13,7 +13,8 @@ final class MockUserRepository: XCTestCase,UserRepository {
     
     func fetchUsers() async throws -> [User] {
             if shouldThrowError {
-                throw NSError(domain: "", code: 1, userInfo: [NSLocalizedDescriptionKey: "Failed to fetch users"])
+                let error = NSError(domain: "", code: 1, userInfo: [NSLocalizedDescriptionKey: "Failed to fetch users"])
+                throw NetworkError.requestFailed(error)
             }
             return usersToReturn
     }
