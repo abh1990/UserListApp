@@ -1,30 +1,9 @@
-//
-//  MockUserRepository.swift
-//  UserDemoAppTests
-//
-
 import XCTest
+
 @testable import UserDemoApp
 
-final class MockUserRepository: XCTestCase,UserRepository, NetworkStatusProvider {
-   
-    var usersToReturn: [User] = []
-    var shouldThrowError = false
-    var isConnected: Bool = true
-    
-    func fetchUsers() async throws -> [User] {
-            if shouldThrowError {
-                let error = NSError(domain: "", code: 1, userInfo: [NSLocalizedDescriptionKey: "Failed to fetch users"])
-                throw NetworkError.requestFailed(error)
-            }
-        
-        if !isConnected {
-            throw NetworkError.noInternet
-        }
-        
-            return usersToReturn
-    }
-    
+final class UserDetailViewControllerTest: XCTestCase {
+
     override func setUpWithError() throws {
         // Put setup code here. This method is called before the invocation of each test method in the class.
     }
@@ -48,4 +27,28 @@ final class MockUserRepository: XCTestCase,UserRepository, NetworkStatusProvider
         }
     }
 
+    func testViewModelPopulatesUIComponents() {
+            // Given
+            let mockUser = User(
+                id: 1,
+                firstName: "John",
+                lastName: "Smith",
+                email: "john@example.com",
+                image: "https://example.com/image.jpg"
+            )
+            let viewModel = UserDetailViewModel(user: mockUser)
+     
+            // Instantiate the VC from storyboard manually
+            let storyboard = UIStoryboard(name: "Main", bundle: nil)
+            let vc = storyboard.instantiateViewController(withIdentifier: "UserDetailViewController") as! UserDetailViewController
+            vc.viewModel = viewModel
+     
+            // Load the view hierarchy
+            _ = vc.view
+     
+            // Then
+            XCTAssertEqual(vc.lblName.text, "Name: John Smith")
+            XCTAssertEqual(vc.lblEmail.text, "Email: john@example.com")
+        }
+    
 }

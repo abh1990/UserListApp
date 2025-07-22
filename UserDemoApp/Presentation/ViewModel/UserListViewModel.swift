@@ -15,6 +15,10 @@ class UserListViewModel: ObservableObject {
  
   @MainActor
   func loadUsersList() async {
+      guard NetworkMonitor.shared.isConnected else {
+          errorMessage = NetworkError.noInternet.errorDescription
+          return
+      }
     isLoading = true
     do {
         users = try await useCase.execute()

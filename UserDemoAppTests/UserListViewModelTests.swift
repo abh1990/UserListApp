@@ -29,10 +29,10 @@ final class UserListViewModelTests: XCTestCase {
     func test_loadUsers_success_populatesUserList() async {
             // Arrange
             let mockRepo = MockUserRepository()
-            mockRepo.usersToReturn = [
-                User(id: 1, name: "John Doe", email: "john@example.com"),
-                User(id: 2, name: "Jane Smith", email: "jane@example.com")
-            ]
+        mockRepo.usersToReturn = [
+            User(id: 1, firstName: "John", lastName: "Doe", email: "john@example.com", image: "https://dummyjson.com/image.jpg"),
+            User(id: 2, firstName: "Jane", lastName: "Smith", email: "jane@example.com", image: "https://dummyjson.com/image1.jpg")
+        ]
         let viewModel = UserListViewModel(useCase: GetUsersUseCaseImp(repo: mockRepo))
      
             // Act
@@ -59,5 +59,40 @@ final class UserListViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.isLoading)
         XCTAssertEqual(viewModel.errorMessage, "The network request failed with error: Failed to fetch users")
     }
+    
+    func testLoadData_whenConnected_shouldReturnData() async {
+           
+           // Arrange
+           let mockRepo = MockUserRepository()
+           //let mockChecker = MockNetworkChecker()
+           mockRepo.isConnected = true
+           mockRepo.usersToReturn = [
+            User(id: 1, firstName: "John", lastName: "Doe", email: "john@example.com", image: "https://dummyjson.com/image.jpg"),
+            User(id: 2, firstName: "Jane", lastName: "Smith", email: "jane@example.com", image: "https://dummyjson.com/image1.jpg")
+               ]
+        
+           let viewModel = UserListViewModel(useCase: GetUsersUseCaseImp(repo: mockRepo))
+       
+           //Act
+           await viewModel.loadUsersList()
+        
+       // Assert
+           XCTAssertEqual(viewModel.users.count, 2)
+           XCTAssertNil(viewModel.errorMessage)
+       }
+    
+    func testLoadData_whenDisconnected_shouldSetError() async {
+        // Arrange
+        let mockRepo = MockUserRepository()
 
+        mockRepo.isConnected = false
+ 
+    let viewModel = UserListViewModel(useCase: GetUsersUseCaseImp(repo: mockRepo))
+    
+        //Act
+        await viewModel.loadUsersList()
+     //Assert
+        XCTAssertEqual(viewModel.users.count, 0)
+        XCTAssertEqual(viewModel.errorMessage, "No Internet connection.")
+    }
 }

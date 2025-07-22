@@ -45,7 +45,7 @@ class UserListViewController: UIViewController {
     }
 }
 
-extension UserListViewController: UITableViewDataSource {
+extension UserListViewController: UITableViewDataSource,UITableViewDelegate {
     
    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int{
        viewModel?.users.count ?? 0
@@ -58,8 +58,17 @@ extension UserListViewController: UITableViewDataSource {
         
         let user = viewModel?.users[indexPath.row]
         
-        cell.configure(with: user?.name ?? "", and: user?.email ?? "")
-        
+        cell.configure(with: "\(user?.firstName ?? "") \(user?.lastName ?? "")", and: user?.email ?? "")
+                
         return cell
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        
+        let user = viewModel?.users[indexPath.row]
+        let detailVM = UserDetailViewModel(user: user)
+        let detailVC = UserDetailViewController.instantiate(with: detailVM)
+        navigationController?.pushViewController(detailVC, animated: true)
+        
     }
 }

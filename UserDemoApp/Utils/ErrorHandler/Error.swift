@@ -10,6 +10,7 @@ enum NetworkError: Error {
     case timeout
     case unauthorized
     case unknown
+    case noInternet
 }
 
 extension NetworkError: LocalizedError {
@@ -33,6 +34,8 @@ extension NetworkError: LocalizedError {
             return "You are not authorized to perform this action."
         case .unknown:
             return "An unknown error occurred."
+        case .noInternet:
+            return "No Internet connection."
         }
     }
 }

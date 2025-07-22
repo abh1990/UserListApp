@@ -11,9 +11,10 @@ public class UseListRepository: UserRepository {
     }
     
     public func fetchUsers() async throws -> [User] {
-        let url = URL(string: "https://jsonplaceholder.typicode.com/users")!
+        let url = URL(string: "https://dummyjson.com/users")!
         do {
-            return try await client.get(url)
+            let response: Users = try await client.get(url)
+            return response.users
         } catch {
             throw error
         }

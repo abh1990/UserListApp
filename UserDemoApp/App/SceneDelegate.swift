@@ -1,47 +1,30 @@
-//
-//  SceneDelegate.swift
-//  Userdemoapp
-//
-//  Created by Koushik Paul on 28/06/25.
-//
-
 import UIKit
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
-
+    
     var window: UIWindow?
-
-
+    
+    
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         // Use this method to optionally configure and attach the UIWindow `window` to the provided UIWindowScene `scene`.
         // If using a storyboard, the `window` property will automatically be initialized and attached to the scene.
         // This delegate does not imply the connecting scene or session are new (see `application:configurationForConnectingSceneSession` instead).
         //  guard let _ = (scene as? UIWindowScene) else { return }
         
+        NetworkMonitor.shared.startMonitoring()
+        
         guard let windowScene = (scene as? UIWindowScene) else { return }
         
         // Instantiate window
         let window = UIWindow(windowScene: windowScene)
         
-        // Load storyboard
-        let storyboard = UIStoryboard(name: "Main", bundle: nil)
-        
-        // Get initial view controller (UINavigationController)
-        guard let navController = storyboard.instantiateInitialViewController() as? UINavigationController,
-              let rootVC = navController.viewControllers.first as? UserListViewController else {
-            return
-        }
-        
-        let networkClient = URLSessionNetworkClient()
-        let repo = UseListRepository(client: networkClient)
-        let useCase = GetUsersUseCaseImp(repo: repo)
-        let viewModel = UserListViewModel(useCase: useCase)
-        print(viewModel)
-        rootVC.viewModel = viewModel
-        // Set up window
-        window.rootViewController = navController
         self.window = window
-        window.makeKeyAndVisible()
+        
+        if (JailbreakDetector.isJailbroken()) {
+            loadDefaultVC()
+        } else {
+            loadUserListVC()
+        }
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {
@@ -72,6 +55,29 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // to restore the scene back to its current state.
     }
 
-
+    func loadDefaultVC() {
+        let defaultVC = DefaultViewController()
+          // Create navigation controller with defaultVC
+          let navController = UINavigationController(rootViewController: defaultVC)
+          // Set up window
+          self.window?.rootViewController = navController
+          self.window?.makeKeyAndVisible()
+    }
+    
+    func loadUserListVC() {
+        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+        let userListVC = storyboard.instantiateViewController(withIdentifier: "UserListViewController") as! UserListViewController
+        let networkClient = URLSessionNetworkClient()
+        let repo = UseListRepository(client: networkClient)
+        let useCase = GetUsersUseCaseImp(repo: repo)
+        let viewModel = UserListViewModel(useCase: useCase)
+        print(viewModel)
+        userListVC.viewModel = viewModel
+        // Create navigation controller with userListVC
+        let navController = UINavigationController(rootViewController: userListVC)
+        // Set up window
+        self.window?.rootViewController = navController
+        self.window?.makeKeyAndVisible()
+    }
 }
 
