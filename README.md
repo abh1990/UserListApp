@@ -1,6 +1,6 @@
 # 👤 UserDemoApp
 
-A modular, scalable iOS application built with Swift and UIKit. The app fetches and displays a list of users from a demo REST API. It follows **Clean Architecture**, utilizes **MVVM** for the presentation layer, and adheres to **SOLID principles** with a strong emphasis on readability, testability, and maintainability.
+A modular, scalable iOS application built with Swift and UIKit. The app fetches and displays a list of users from a demo REST API. Tapping on a user navigates to a detail screen showing their **profile image**, **full name**, and **email**. It follows **Clean Architecture**, utilizes **MVVM** for the presentation layer, and adheres to **SOLID principles** with a strong emphasis on readability, testability, and maintainability.
 
 ---
 
@@ -8,10 +8,16 @@ A modular, scalable iOS application built with Swift and UIKit. The app fetches 
 
 - 🔹 Fetch user list from a remote REST API
 - 🔹 Display users in a table view
+- 🔹 Tapping on a user navigates to a detail screen showing:
+       - Async-load profile image from URL
+       - Full name
+       - Email address
+- 🔹 Internet connectivity check
+- 🔹 Jailbreak detection for basic security enforcement
 - 🔹 Implements MVVM architecture
 - 🔹 Clean separation of concerns across modules
 - 🔹 Asynchronous data fetching with `async/await`
-- 🔹 Unit test coverage above 80%
+- 🔹 Unit test coverage 80%
 - 🔹 Built with native Swift libraries including Combine
 
 ---
@@ -26,19 +32,53 @@ A modular, scalable iOS application built with Swift and UIKit. The app fetches 
 
 ---
 
-## 📦 Modules
+## 📦 Project Structure
 
-The app is structured into well-defined modules:
+UserListApp/
+│
+├── Presentation/
+│ ├── UserList/
+│ ├── UserDetail/
+│
+├── Domain/
+│ ├── Entities/
+│ └── UseCases/
+│
+├── Network/
+│
+├── Utilities/
+│ ├── Reachability/
+│ ├── JailbreakDetection/
+│ └── NetworkMonitor/
+│ └── Extension/
+│ └── ErrorHandler/
+│ └── AlertManager/
+│
+└── Resources/
+└── Assets, Info.plist
 
-- `BaseUI` – Common UI components and styling
-- `Network` – Handles API communication using `URLSession` and `async/await`
-- `BusinessLogic` – Core logic and use cases
-- `AppCore` – Shared models, extensions, and utilities
 
 ---
 
+
 ## 🧱 Architecture
 
+The app is organized into three core layers:
+- **Presentation Layer** – UI logic using MVVM
+- **Domain Layer** – Business rules (Use Cases, Entities)
+- **Network Layer** – Repositories and API communication
+- **Utils** – Contains helper classes that can be reused (Alert Manager, Network Monitor etc.) 
+- **App** – Handles and manages app lifecycle events or each scene (AppDelegate, SceneDelegate)
+- **Resources** – Contains assets and configuration files app needs to run UI (Assets.xcassets, Launch. storyboard)
+ 
+This separation ensures:
+- Independent unit testing
+- Feature scalability
+- Platform independence
+ 
+### 🔄 MVVM Pattern- **Model** – User data structures
+- **ViewModel** – Presentation logic, data-binding
+- **View (Controller)** – UIKit views, data display, and user interaction
 - **Pattern**: MVVM
 - **Principles**: SOLID, Clean Architecture
 - **Frameworks**: UIKit, Combine
@@ -50,6 +90,10 @@ The app is structured into well-defined modules:
 | Model      | `User`                 |
 | View       | `UserListViewController` |
 | ViewModel  | `UserListViewModel`    |
+| View       | `UserDetailViewController`    |
+| ViewModel  | `UserDetailViewModel`    |
+| Cell       | `UserTableViewCell`    |
+
 
 - ViewModel exposes observable state
 - Handles async API fetching and error handling
@@ -77,8 +121,10 @@ The app is structured into well-defined modules:
 > The architecture enables easy mocking of dependencies and promotes isolated testing of ViewModels and networking logic.
 
 ## 📸 Screenshots
-<img width="1138" alt="Screenshot 2025-07-03 at 4 33 46 PM" src="https://github.com/user-attachments/assets/a6fa3814-b52e-4eaa-9a3c-961ab9e54383" />
-![Simulator Screenshot - iPhone 16 - 2025-07-03 at 15 57 12](https://github.com/user-attachments/assets/888f3973-caf2-4f6d-866b-b53e0e2da9af)
+
+<img width="1179" height="2556" alt="Simulator Screenshot - iPhone 16 - 2025-07-22 at 17 09 24" src="https://github.com/user-attachments/assets/28ee46e5-e38e-4d4f-80d5-8dd8acc42264" />
+<img width="1179" height="2556" alt="Simulator Screenshot - iPhone 16 - 2025-07-22 at 17 09 29" src="https://github.com/user-attachments/assets/9058a432-ef57-4323-ad1a-ed6d9ed2694b" />
+<img width="1132" height="837" alt="Screenshot 2025-07-22 at 5 07 30 PM" src="https://github.com/user-attachments/assets/1cbb80a4-6607-4c3a-9bc4-d9f1c4f4a569" />
 
 
 
