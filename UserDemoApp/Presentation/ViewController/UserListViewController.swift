@@ -3,19 +3,64 @@ import Combine
 
 class UserListViewController: UIViewController {
     
-    var viewModel: UserListViewModel?
     
-    @IBOutlet weak var loader: UIActivityIndicatorView!
+    private var tableView: UITableView!
     
-    @IBOutlet weak var tableView: UITableView!
+    let loader = UIActivityIndicatorView(style: .large)
     
     var cancellables = Set<AnyCancellable>()
+    
+    private var dataSource: UITableViewDiffableDataSource<Int, User>!
+    
+    var viewModel: UserListViewModel?
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         bindViewModel()
+        setupTableView()
+        setupLoader()
         Task { await viewModel?.loadUsersList() }
+    }
+    
+    func setupLoader() {
+        loader.translatesAutoresizingMaskIntoConstraints = false
+        loader.color = .gray // Customize color
+        tableView.addSubview(loader)
+        
+        // Center the loader in the view
+        NSLayoutConstraint.activate([
+            loader.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            loader.centerYAnchor.constraint(equalTo: view.centerYAnchor)
+        ])
+        
+        
+    }
+    
+    private func setupTableView() {
+        tableView = UITableView(frame: view.bounds, style: .plain)
+        tableView.register(UserTableViewCell.self, forCellReuseIdentifier: "UserCell")
+        view.addSubview(tableView)
+        tableView.frame = view.bounds
+        tableView.delegate = self
+        
+        dataSource = UITableViewDiffableDataSource<Int, User>(tableView: tableView) {
+            (tableView, indexPath, user) -> UITableViewCell? in
+            
+            guard let cell = tableView.dequeueReusableCell(withIdentifier: "UserCell", for: indexPath) as? UserTableViewCell else {
+                return UITableViewCell()
+            }
+            cell.configure(with: "\(user.firstName) \(user.lastName)", and: user.email)
+            
+            return cell
+        }
+    }
+    
+    private func applySnapshot(_ users: [User]) {
+        var snapshot = NSDiffableDataSourceSnapshot<Int, User>()
+        snapshot.appendSections([0])
+        snapshot.appendItems(users)
+        dataSource.apply(snapshot, animatingDifferences: true)
     }
     
     private func bindViewModel() {
@@ -23,7 +68,7 @@ class UserListViewController: UIViewController {
         viewModel?.$users
             .receive(on: DispatchQueue.main)
             .sink { [weak self] _ in
-                self?.tableView.reloadData()
+                self?.applySnapshot(self?.viewModel?.users ?? [])
             }.store(in: &cancellables)
         
         viewModel?.$isLoading
@@ -45,23 +90,7 @@ class UserListViewController: UIViewController {
     }
 }
 
-extension UserListViewController: UITableViewDataSource,UITableViewDelegate {
-    
-   func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int{
-       viewModel?.users.count ?? 0
-  }
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: "UserCell", for: indexPath) as? UserTableViewCell else {
-                    return UITableViewCell()
-                }
-        
-        let user = viewModel?.users[indexPath.row]
-        
-        cell.configure(with: "\(user?.firstName ?? "") \(user?.lastName ?? "")", and: user?.email ?? "")
-                
-        return cell
-    }
+extension UserListViewController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         

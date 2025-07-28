@@ -65,13 +65,11 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     }
     
     func loadUserListVC() {
-        let storyboard = UIStoryboard(name: "Main", bundle: nil)
-        let userListVC = storyboard.instantiateViewController(withIdentifier: "UserListViewController") as! UserListViewController
+        let userListVC = UserListViewController()
         let networkClient = URLSessionNetworkClient()
         let repo = UseListRepository(client: networkClient)
         let useCase = GetUsersUseCaseImp(repo: repo)
         let viewModel = UserListViewModel(useCase: useCase)
-        print(viewModel)
         userListVC.viewModel = viewModel
         // Create navigation controller with userListVC
         let navController = UINavigationController(rootViewController: userListVC)

@@ -1,9 +1,9 @@
 
-public struct Users:Codable {
+public struct Users:Codable, Hashable {
     public let users: [User]
 }
 
-public struct User: Codable {
+public struct User: Codable, Hashable {
   public let id: Int
   public let firstName: String
   public let lastName: String
