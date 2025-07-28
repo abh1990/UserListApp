@@ -1,4 +1,4 @@
-
+/*
 class UserDetailViewModel {
     
     let fullName: String
@@ -12,4 +12,14 @@ class UserDetailViewModel {
     }
     
 }
+*/
 
+import Combine
+ 
+class UserDetailViewModel {
+    @Published var userDetails: UserDetails?
+ 
+    init(userDetails: UserDetails?) {
+        self.userDetails = userDetails
+    }
+}

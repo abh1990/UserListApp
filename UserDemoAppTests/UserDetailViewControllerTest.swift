@@ -1,9 +1,12 @@
 import XCTest
+import Combine
 
 @testable import UserDemoApp
 
 final class UserDetailViewControllerTest: XCTestCase {
 
+    var cancellables: Set<AnyCancellable> = []
+    
     override func setUpWithError() throws {
         // Put setup code here. This method is called before the invocation of each test method in the class.
     }
@@ -27,28 +30,62 @@ final class UserDetailViewControllerTest: XCTestCase {
         }
     }
 
-    func testViewModelPopulatesUIComponents() {
-            // Given
-            let mockUser = User(
-                id: 1,
-                firstName: "John",
-                lastName: "Smith",
-                email: "john@example.com",
-                image: "https://example.com/image.jpg"
-            )
-            let viewModel = UserDetailViewModel(user: mockUser)
+//    func testViewModelPopulatesUIComponents() {
+//            // Given
+//            let mockUser = User(
+//                id: 1,
+//                firstName: "John",
+//                lastName: "Smith",
+//                email: "john@example.com",
+//                image: "https://example.com/image.jpg"
+//            )
+//            let viewModel = UserDetailViewModel(user: mockUser)
+//     
+//            // Instantiate the VC from storyboard manually
+//            let storyboard = UIStoryboard(name: "Main", bundle: nil)
+//            let vc = storyboard.instantiateViewController(withIdentifier: "UserDetailViewController") as! UserDetailViewController
+//            vc.viewModel = viewModel
+//     
+//            // Load the view hierarchy
+//            _ = vc.view
+//     
+//            // Then
+//            XCTAssertEqual(vc.lblName.text, "Name: John Smith")
+//            XCTAssertEqual(vc.lblEmail.text, "Email: john@example.com")
+//        }
+    
+    func testUserDetailViewControllerDisplaysCorrectData() {
+            // 1. Create mock user and view model
+        let user = User(
+                        id: 1,
+                        firstName: "John",
+                        lastName: "Smith",
+                        email: "john@example.com",
+                        image: "https://example.com/image.jpg"
+                    )
+        
+        let userDetails = UserDetails(fullName: "\(user.firstName) \(user.lastName)", email: user.email, imageUrl: user.image)
+
      
-            // Instantiate the VC from storyboard manually
-            let storyboard = UIStoryboard(name: "Main", bundle: nil)
-            let vc = storyboard.instantiateViewController(withIdentifier: "UserDetailViewController") as! UserDetailViewController
+        let viewModel = UserDetailViewModel(userDetails: userDetails)
+     
+            // 2. Create the view controller and assign the viewModel
+            let vc = UserDetailViewController()
             vc.viewModel = viewModel
      
-            // Load the view hierarchy
-            _ = vc.view
+            // 3. Load the view lifecycle to trigger viewDidLoad()
+            vc.loadViewIfNeeded()
      
-            // Then
-            XCTAssertEqual(vc.lblName.text, "Name: John Smith")
-            XCTAssertEqual(vc.lblEmail.text, "Email: john@example.com")
+            // 4. Expectation to allow Combine to publish
+            let expectation = XCTestExpectation(description: "Wait for UI to update")
+     
+            // Wait for Combine to deliver the value
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                XCTAssertEqual(vc.lblName.text, "Name: John Smith")
+                XCTAssertEqual(vc.lblEmail.text, "Email: john@example.com")
+                expectation.fulfill()
+            }
+     
+            wait(for: [expectation], timeout: 1.0)
         }
-    
 }

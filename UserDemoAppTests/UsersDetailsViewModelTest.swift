@@ -1,9 +1,18 @@
 import XCTest
+import Combine
 
 @testable import UserDemoApp
 
 final class UsersDetailsViewModelTest: XCTestCase {
 
+    var viewModel: UserDetailViewModel!
+    var cancellables: Set<AnyCancellable>!
+    
+    override func setUp() {
+            super.setUp()
+            cancellables = []
+        }
+    
     override func setUpWithError() throws {
         // Put setup code here. This method is called before the invocation of each test method in the class.
     }
@@ -19,12 +28,14 @@ final class UsersDetailsViewModelTest: XCTestCase {
             lastName: "Doe",
             email: "jane@example.com",
             image: "https://dummyjson.com/image.jpg")
+        
+        let userDetails = UserDetails(fullName: "\(user.firstName) \(user.lastName)", email: user.email, imageUrl: user.image)
 
-        let viewModel = UserDetailViewModel(user: user)
+        let viewModel = UserDetailViewModel(userDetails: userDetails)
 
-        XCTAssertEqual(viewModel.fullName, "Jane Doe")
-        XCTAssertEqual(viewModel.email, "jane@example.com")
-        XCTAssertEqual(viewModel.imageUrl, "https://dummyjson.com/image.jpg")
+        XCTAssertEqual(viewModel.userDetails?.fullName, "Jane Doe")
+        XCTAssertEqual(viewModel.userDetails?.email, "jane@example.com")
+        XCTAssertEqual(viewModel.userDetails?.imageUrl, "https://dummyjson.com/image.jpg")
     }
 
     func test_init_shouldFailWithIncorrectProperties() {
@@ -35,12 +46,14 @@ final class UsersDetailsViewModelTest: XCTestCase {
             email: "jane@example.com",
             image: "https://dummyjson.com/image.jpg")
 
-        let viewModel = UserDetailViewModel(user: user)
+        let userDetails = UserDetails(fullName: "\(user.firstName) \(user.lastName)", email: user.email, imageUrl: user.image)
 
-        XCTAssertNotEqual(viewModel.fullName, "Janet Doe")
-        XCTAssertNotEqual(viewModel.email, "janet@example.com")
+        let viewModel = UserDetailViewModel(userDetails: userDetails)
+
+        XCTAssertNotEqual(viewModel.userDetails?.fullName, "Janet Doe")
+        XCTAssertNotEqual(viewModel.userDetails?.email, "janet@example.com")
         XCTAssertNotEqual(
-            viewModel.imageUrl, "https://dummyjson.com/image1.jpg")
+            viewModel.userDetails?.imageUrl, "https://dummyjson.com/image1.jpg")
     }
 
     func testExample() throws {
@@ -69,30 +82,36 @@ final class UsersDetailsViewModelTest: XCTestCase {
         )
 
         // When
-        let viewModel = UserDetailViewModel(user: mockUser)
+        let userDetails = UserDetails(fullName: "\(mockUser.firstName) \(mockUser.lastName)", email: mockUser.email, imageUrl: mockUser.image)
+        
+        let viewModel = UserDetailViewModel(userDetails: userDetails)
 
         // Then
-        XCTAssertEqual(viewModel.fullName, "Jane Doe")
-        XCTAssertEqual(viewModel.email, "jane.doe@example.com")
-        XCTAssertEqual(viewModel.imageUrl, "https://example.com/jane.jpg")
+        XCTAssertEqual(viewModel.userDetails?.fullName, "Jane Doe")
+        XCTAssertEqual(viewModel.userDetails?.email, "jane.doe@example.com")
+        XCTAssertEqual(viewModel.userDetails?.imageUrl, "https://example.com/jane.jpg")
     }
 
     func testInit_withNilUser_setsEmptyProperties() {
-        let viewModel = UserDetailViewModel()
+        
+        let viewModel = UserDetailViewModel(userDetails: UserDetails(fullName: "", email: "", imageUrl: ""))
 
-        XCTAssertEqual(viewModel.fullName, " ")
-        XCTAssertEqual(viewModel.email, "")
-        XCTAssertEqual(viewModel.imageUrl, "")
+        XCTAssertEqual(viewModel.userDetails?.fullName, "")
+        XCTAssertEqual(viewModel.userDetails?.email, "")
+        XCTAssertEqual(viewModel.userDetails?.imageUrl, "")
     }
 
     func testInit_withMissingLastName() {
         let user = User(id: 1,
             firstName: "Jane", lastName: "", email: "jane@example.com",
             image: "")
-        let viewModel = UserDetailViewModel(user: user)
+        
+        let userDetails = UserDetails(fullName: "\(user.firstName) \(user.lastName)", email: user.email, imageUrl: user.image)
 
-        XCTAssertEqual(viewModel.fullName, "Jane ")
-        XCTAssertEqual(viewModel.email, "jane@example.com")
-        XCTAssertEqual(viewModel.imageUrl, "")
+        let viewModel = UserDetailViewModel(userDetails: userDetails)
+
+        XCTAssertEqual(viewModel.userDetails?.fullName, "Jane ")
+        XCTAssertEqual(viewModel.userDetails?.email, "jane@example.com")
+        XCTAssertEqual(viewModel.userDetails?.imageUrl, "")
     }
 }

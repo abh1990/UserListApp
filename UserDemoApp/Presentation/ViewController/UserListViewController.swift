@@ -66,8 +66,9 @@ extension UserListViewController: UITableViewDataSource,UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
         let user = viewModel?.users[indexPath.row]
-        let detailVM = UserDetailViewModel(user: user)
-        let detailVC = UserDetailViewController.instantiate(with: detailVM)
+        let detailVM = UserDetailViewModel(userDetails: UserDetails(fullName: "\(user?.firstName ?? "") \(user?.lastName ?? "")", email: user?.email ?? "", imageUrl: user?.image ?? ""))
+        let detailVC = UserDetailViewController()
+        detailVC.viewModel = detailVM
         navigationController?.pushViewController(detailVC, animated: true)
         
     }
