@@ -122,8 +122,8 @@ This separation ensures:
 
 ## 📸 Screenshots
 
-<img width="1179" height="2556" alt="Simulator Screenshot - iPhone 16 - 2025-07-22 at 17 09 24" src="https://github.com/user-attachments/assets/28ee46e5-e38e-4d4f-80d5-8dd8acc42264" />
-<img width="1179" height="2556" alt="Simulator Screenshot - iPhone 16 - 2025-07-22 at 17 09 29" src="https://github.com/user-attachments/assets/9058a432-ef57-4323-ad1a-ed6d9ed2694b" />
+<img width="1179" height="2556" alt="Simulator Screenshot - iPhone 16 - 2025-07-28 at 18 25 09" src="https://github.com/user-attachments/assets/09957751-2447-4015-9193-8aae16648bc1" />
+<img width="1179" height="2556" alt="Simulator Screenshot - iPhone 16 - 2025-07-28 at 18 25 16" src="https://github.com/user-attachments/assets/0bc029f3-2b75-4d37-9a61-307d20d97f67" />
 <img width="1132" height="837" alt="Screenshot 2025-07-22 at 5 07 30 PM" src="https://github.com/user-attachments/assets/1cbb80a4-6607-4c3a-9bc4-d9f1c4f4a569" />
 
 
