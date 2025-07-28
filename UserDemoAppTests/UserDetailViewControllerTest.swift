@@ -29,30 +29,6 @@ final class UserDetailViewControllerTest: XCTestCase {
             // Put the code you want to measure the time of here.
         }
     }
-
-//    func testViewModelPopulatesUIComponents() {
-//            // Given
-//            let mockUser = User(
-//                id: 1,
-//                firstName: "John",
-//                lastName: "Smith",
-//                email: "john@example.com",
-//                image: "https://example.com/image.jpg"
-//            )
-//            let viewModel = UserDetailViewModel(user: mockUser)
-//     
-//            // Instantiate the VC from storyboard manually
-//            let storyboard = UIStoryboard(name: "Main", bundle: nil)
-//            let vc = storyboard.instantiateViewController(withIdentifier: "UserDetailViewController") as! UserDetailViewController
-//            vc.viewModel = viewModel
-//     
-//            // Load the view hierarchy
-//            _ = vc.view
-//     
-//            // Then
-//            XCTAssertEqual(vc.lblName.text, "Name: John Smith")
-//            XCTAssertEqual(vc.lblEmail.text, "Email: john@example.com")
-//        }
     
     func testUserDetailViewControllerDisplaysCorrectData() {
             // 1. Create mock user and view model
